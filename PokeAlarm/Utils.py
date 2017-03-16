@@ -251,6 +251,12 @@ def get_gmaps_link(lat, lng):
     return 'http://maps.google.com/maps?q={}'.format(latlng)
 
 
+# Returns a String link to Apple Maps Pin at the location
+def get_applemaps_link(lat, lng):
+    latLon = '{},{}'.format(repr(lat), repr(lng))
+    return 'http://maps.apple.com/maps?daddr={}&z=10&t=s&dirflg=w'.format(latLon)
+
+
 # Returns a static map url with <lat> and <lng> parameters for dynamic test
 def get_static_map_url(settings, api_key=None):  # TODO: optimize formatting
     if not parse_boolean(settings.get('enabled', 'True')):
