@@ -27,8 +27,11 @@ class RocketMap:
                 return RocketMap.pokemon(data.get('message'))
             elif kind == 'pokestop':
                 return RocketMap.pokestop(data.get('message'))
-            elif kind == 'gym' or kind == 'gym_details':
-                return RocketMap.gym(data.get('message'))
+            elif kind == 'gym':
+                log.warning('I AIN\'T DOIN NOTHING ABOUT REGULAR GYM POSTS')
+                # return RocketMap.gym(data.get('message'))
+            elif kind == 'gym_details':
+                return RocketMap.gym_details(data.get('message'))
             elif kind in ['captcha', 'scheduler']:  # Unsupported Webhooks
                 log.debug("{} webhook received. This webhooks is not yet supported at this time.".format({kind}))
             else:
@@ -105,7 +108,7 @@ class RocketMap:
 
     @staticmethod
     def gym(data):
-        log.debug("Converting to gym: \n {}".format(data))
+        log.debug("Converting to normal gym: \n {}".format(data))
         gym = {
             'type': "gym",
             'id': data.get('gym_id',  data.get('id')),
@@ -118,6 +121,24 @@ class RocketMap:
         gym['gmaps'] = get_gmaps_link(gym['lat'], gym['lng'])
         return gym
 
+    @staticmethod
+    def gym_details(data):
+        log.debug("Converting to gym-details: \n {}".format(data))
+        defenders = ""
+        for pokemon in data.get('pokemon'):
+            defenders += "{0} (CP {1}) trained by {2} ({3})\n".format(get_pkmn_name(pokemon['pokemon_id']), pokemon['cp'], pokemon['trainer_name'], pokemon['trainer_level'])
+        gym_details = {
+            'type': "gym",
+            'name': data.get('name', data.get('name')),
+            'id': data.get('gym_id',  data.get('id')),
+            'team_id': int(data.get('team_id',  data.get('team'))),
+            'defenders': defenders,
+            'lat': float(data['latitude']),
+            'lng': float(data['longitude'])
+        }
+        # log.warning("PARSED GYM INFORMATION: \n {}".format(gym_details))
+        gym_details['gmaps'] = get_gmaps_link(gym_details['lat'], gym_details['lng'])
+        return gym_details
 
 # Ensure that the value isn't None but replacing with a default
 def check_for_none(type_, val, default):
