@@ -28,7 +28,7 @@ class RocketMap:
             elif kind == 'pokestop':
                 return RocketMap.pokestop(data.get('message'))
             elif kind == 'gym':
-                log.warning('I AIN\'T DOIN NOTHING ABOUT REGULAR GYM POSTS')
+                log.debug('I AIN\'T DOIN NOTHING ABOUT REGULAR GYM POSTS')
                 # return RocketMap.gym(data.get('message'))
             elif kind == 'gym_details':
                 return RocketMap.gym_details(data.get('message'))
